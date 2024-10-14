@@ -1,32 +1,14 @@
--- 실습문제
-CREATE TABLE CAR(
-    CAR_ID CHAR(10),
-    CAR_NAME VARCHAR2(30),
-    CAR_MAKER VARCHAR2(30),
-    CAR_MAKE_YEAR NUMBER(4),
-    CAR_PRICE NUMBER(5)
-);
+-- 함수
+-- DUAL : 임시 테이블, 값을 확인하는 용도(함수 결과 값, 계산 결과 값)
+-- SYSDATE : 현재 날짜 시간값
 
-SELECT * FROM CAR;
+SELECT 'Hello', 10 + 2 FROM DUAL;
+SELECT SYSDATE FROM DUAL;
 
-
-
--- 자동차 테이블에서 제조사가 bmw인 자동차를 조회
-SELECT * FROM CAR WHERE CAR_MAKER LIKE 'BMW';
-SELECT ROWNUM, C.* FROM CAR C WHERE CAR_MAKER LIKE 'BMW'; -- 줄번호로 조회
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+-- 문자열 데이터
+-- INITCAP : 각 단어별 첫글자는 대문자로 변환, 나머지 글자는 소문자로 변환
+SELECT INITCAP('HELL WORD') FROM DUAL;
+SELECT INITCAP('hell word') FROM DUAL;
+-- LOWER :
+-- UPPER :
+SELECT LOWER('Hello World'), UPPER('Hello World') FROM DUAL;  
