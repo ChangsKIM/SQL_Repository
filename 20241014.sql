@@ -16,3 +16,12 @@ SELECT LOWER('Hello World'), UPPER('Hello World') FROM DUAL;
 SELECT LENGTH('Hollo'), LENGTH ('안녕하세요') FROM DUAL;
 -- LENGTHB :
 SELECT LENGTHB('Hollo'), LENGTHB('안녕하세요') FROM DUAL;
+
+-- PERSON 테이블의 이름 글자개수와 글자개수의 바이트수를 출력
+-- EX) 김창수 3, 9
+SELECT LENGTH('김철수'), LENGTHB('김철수') FROM DUAL;
+SELECT PNAME, LENGTH(PNAME), LENGTHB(PNAME) FROM PERSON;
+
+-- PERSON 테이블에서 PAGE에 있는 NULL값을 가진 레코드를 조회
+SELECT * FROM NEW_PERSON WHERE PAGE IS NULL;
+
