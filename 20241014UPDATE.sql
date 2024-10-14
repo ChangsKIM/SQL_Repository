@@ -46,6 +46,9 @@ CREATE TABLE CAR(
 
 SELECT * FROM CAR;
 
+-- 자동차 테이블에서 제조사가 bmw인 자동차를 조회
+SELECT * FROM CAR WHERE CAR_MAKER LIKE 'BMW';
+SELECT ROWNUM, C.* FROM CAR C WHERE CAR_MAKER LIKE 'BMW'; -- 줄번호로 조회
 
 
 
