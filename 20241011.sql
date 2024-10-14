@@ -157,5 +157,23 @@ SELECT ROWNUM, C.* FROM CAR C WHERE CAR_MAKER LIKE 'BMW';
 
 --자동차 데이터 top 10건 출력
 SELECT * FROM CAR WHERE rownum <= 10;
+
 -- 자동차 테이블에서 제조사가 BMW이거나 Mercedes, Audi인 자동차를 조회
 SELECT * FROM CAR WHERE CAR_MAKER LIKE 'BMW' OR CAR_MAKER LIKE 'Audi'; 
+SELECT * FROM CAR
+WHERE CAR_MAKER IN ('BMW', 'Mercedes', 'Audi');
+
+-- 자동차 테이블에서 자동차 금액이 7,000 이상 9,000이하인 자동차를 조회
+SELECT * FROM CAR
+WHERE CAR_PRICE > 7000 AND CAR_PRICE < 9000;
+SELECT * FROM CAR WHERE CAR_PRICE BETWEEN 7000 AND 9000;
+
+-- 자동차 테이블에서 제조사가 Kia아니면 자동차 금액이 7,000이상 9,000이하인 자동차를 조회
+SELECT * FROM CAR
+WHERE
+CAR_PRICE BETWEEN 7000 AND 9000
+AND
+CAR_MAKER LIKE 'Kia';
+
+
+
