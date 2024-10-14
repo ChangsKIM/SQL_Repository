@@ -1,0 +1,12 @@
+CREATE TABLE 제조사(
+	제조사번호 NUMBER PRIMARY KEY,
+	제조사명 VARCHAR2(100)
+);
+SELECT * FROM 제조사;
+
+CREATE TABLE 제품(
+	제품번호 VARCHAR2(20) PRIMARY KEY,
+	제품명 VARCHAR2(100),
+	제조사번호 NUMBER,
+	금액 NUMBER
+);
