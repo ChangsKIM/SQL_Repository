@@ -13,4 +13,7 @@ SELECT * FROM STUDENT;
 
 -- 문제 : PERSON 테이블의 데이터 중 20세 미만인 데이터는 나이를 99로 수정
 UPDATE NEW_PERSON SET PAGE = 99 WHERE PAGE < 21;
+-- 문제 : PERSON 테이블 데이터 중 30세 미만인 데이터에 나이를 현재 값에 5씩 빼서 저장
+UPDATE  NEW_PERSON SET PAGE = PAGE-5 WHERE PAGE < 40;
 
+SELECT * FROM NEW_PERSON;
