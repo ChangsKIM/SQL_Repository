@@ -151,10 +151,28 @@ SELECT TO_CHAR(1234567, 'S9,999,999') FROM DUAL;
 SELECT TO_CHAR(-1234567, '9,999,999PR') FROM DUAL;
 SELECT TO_CHAR(1234567, '9,999,999PR') FROM DUAL;
 FROM DUAL;
+------ SAVE ------
 
 
+-- 문자열을 날짜로 변경
+SELECT TO_DATE('2020-11-11','YYYY-MM-DD') FROM DUAL; --2020-11-11 00:00:00.000
+-- 오늘 날짜부터 지정된 날짜가지 남은 개월 수
+SELECT MONTHS_BETWEEN(SYSDATE, '2024-12-31') FROM DUAL; -- -2.4976
+-- 지정된 날짜부터 몇 개월 후 날짜
+SELECT ADD_MONTHS(SYSDATE,2) FROM DUAL; -- 2024-12-15 13:47:13.000
+-- 지정된 날짜(돌아오는 요일)
+SELECT NEXT_DAY(SYSDATE, '수') FROM DUAL; -- 2024-10-16 13:49:57.000
+SELECT NEXT_DAY(SYSDATE, '월') FROM DUAL; -- 2024-10-21 13:49:46.000
+-- 주어진 날짜 기준으로 날짜가 속한 달의 마지막 날
+SELECT LAST_DAY(SYSDATE) FROM DUAL; 
+-- 내일 날짜 출력
+SELECT SYSDATE+1 FROM DUAL;
 
-
+-- 연습문제
+-- D-DAY출력 (수능)
+SELECT '수능 D-' || TRUNC(TO_DATE('2024-11-14', 'YYYY/MM/DD')-SYSDATE) AS D_DAY FROM DUAL; 
+SELECT '수능 D-' || CEIL(TO_DATE('2024-11-14', 'YYYY-MM-DD')-SYSDATE) AS D_DAY FROM DUAL;
+------ SAVE ------
 
 
 ------------------------------------------------------------------------
