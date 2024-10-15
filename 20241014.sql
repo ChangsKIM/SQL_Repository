@@ -174,6 +174,31 @@ SELECT '수능 D-' || TRUNC(TO_DATE('2024-11-14', 'YYYY/MM/DD')-SYSDATE) AS D_DA
 SELECT '수능 D-' || CEIL(TO_DATE('2024-11-14', 'YYYY-MM-DD')-SYSDATE) AS D_DAY FROM DUAL;
 ------ SAVE ------
 
+-- 윈도우 함수
+-- 키워드 : OVER(), PARTITION BY, ORDER BY
+-- 순위 함수
+-- ROW_NUMBER(): 행에 고유한 번호를 부여
+-- RANK(): 동일한 값이 있을 경우 같은 순위를 부여하고, 그 다음 순위는 건너뜀
+-- DENSE_RANK(): 동일한 값이 있을 경우 같은 순위를 부여하지만, 다음 순위는 건너뛰지 않음
+
+-- 나이가 적은 순위
+SELECT RANK() OVER(ORDER BY PAGE), P.* FROM PERSON P;
+-- 나이가 많은 순위
+SELECT RANK() OVER(ORDER BY PAGE DESC), P.* FROM PERSON P;
+SELECT DENSE_RANK() OVER(ORDER BY PAGE DESC), P.* FROM PERSON P;
+-- 줄 번호 생성
+SELECT ROW_NUMBER() OVER(ORDER BY PAGE ) AS RW, P.* FROM PERSON P;
+SELECT ROW_NUMBER() OVER(ORDER BY PAGE DESC) AS RW, P.* FROM PERSON P;
+
+SELECT ROW_NUMBER() OVER(ORDER BY PAGE ) AS RW,
+RANK() OVER(ORDER BY PAGE ASC) AS RANK,
+P.* FROM PERSON P
+
+SELECT * FROM PERSON; 
+------ SAVE ------
+
+
+
 
 ------------------------------------------------------------------------
 -- 연습문제
