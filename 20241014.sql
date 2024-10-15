@@ -67,6 +67,11 @@ SELECT RTRIM('AAABBBCCCDDDCCCBBBAAA', 'A') FROM DUAL;
 SELECT RTRIM('AAABBBCCCDDDCCCBBBAAA', 'AB') FROM DUAL;
 SELECT LTRIM('AAABBBCCCDDDCCCBBBAAA', 'AB') FROM DUAL;
 
+-- CONCAT 두 문자열을 연결
+SELECT CONCAT('HELLO', 'WORLD') FROM DUAL; -- 2개만 가능
+SELECT 'HELLO' || ' ' || 'WORLD' FROM DUAL; -- 뭐든지 가능함
+
+
 
 ------------------------------------------------------
 
@@ -205,6 +210,24 @@ SELECT P.*, LEAD(PNAME) OVER(ORDER BY PAGE) FROM PERSON P;
 SELECT P.*, LAG(PNAME) OVER(ORDER BY PAGE) AS PREV_PNAME FROM PERSON P;
 SELECT P.*, LAG(PNAME, 2) OVER(ORDER BY PAGE) AS PREV_PNAME FROM PERSON P;
 SELECT P.*, LAG(PNAME, 2, '데이터 없음') OVER(ORDER BY PAGE) AS PREV_PNAME FROM PERSON P;
+------ SAVE ------
+------------------------------------------------------------------------
+
+-- 연습문제
+-- 학생 테이블(STUDENT)의 평점(SCORE)을 기준으로 성적 순위를 출력
+-- 성적순은 내림차순으로 처리, 순위는 건너뛰지 않음
+-- 컬럼 STD_NO, STD_NAME, MAJOR_NAME, SCORE
+-- 정답
+-- 성적순으로 배열, 순위는 건너뒤지 않음
+SELECT S.*, DENSE_RANK() OVER(ORDER BY SCORE DESC) AS RANK FROM STUDENT S;
+-- 학과명끼리 분류(PARTITION)하여, 성적순으로 배열
+SELECT S.*, DENSE_RANK() OVER(PARTITION BY S.MAJOR_NAME ORDER BY SCORE DESC) AS RANK FROM STUDENT S;
+
+
+
+
+
+
 
 
 
