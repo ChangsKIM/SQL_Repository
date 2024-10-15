@@ -10,3 +10,5 @@ CREATE TABLE 제품(
 	제조사번호 NUMBER,
 	금액 NUMBER
 );
+
+SELECT * FROM 제품;
