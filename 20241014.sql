@@ -197,6 +197,14 @@ P.* FROM PERSON P
 SELECT * FROM PERSON; 
 ------ SAVE ------
 
+-- 현재 행을 기준으로 다음 위치에 해당하는 값을 읽어오는 함수
+-- LEAD 다음 데이터 확인 (LEAD(PNAME, 2, NULL값 수정)
+-- 다음 행의 값을 가져오는 윈도우 함수
+SELECT P.*, LEAD(PNAME) OVER(ORDER BY PAGE) FROM PERSON P;
+-- 현재 행을 기준으로 이전 위치에 해당하는 값을 읽어오는 함수
+SELECT P.*, LAG(PNAME) OVER(ORDER BY PAGE) AS PREV_PNAME FROM PERSON P;
+SELECT P.*, LAG(PNAME, 2) OVER(ORDER BY PAGE) AS PREV_PNAME FROM PERSON P;
+SELECT P.*, LAG(PNAME, 2, '데이터 없음') OVER(ORDER BY PAGE) AS PREV_PNAME FROM PERSON P;
 
 
 
