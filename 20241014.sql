@@ -90,6 +90,17 @@ SELECT TRUNC(123.456,0) FROM DUAL; -- 123
 SELECT TRUNC(123.456,1) FROM DUAL; -- 123.4
 SELECT TRUNC(123.456,2) FROM DUAL; -- 123.45
 
+------ SAVE ------
+
+-- MOD ; 나눗셈을 해서 나머지 값을 출력
+SELECT MOD(26,4) FROM DUAL; -- 2
+
+-- POWER ; 제곱 값 출력
+SELECT POWER(2,10) FROM DUAL; -- 1,024
+
+-- 덧셈연산 (기본 적으로 형변환이 이루어져 계산이 됨)
+SELECT 123 + '123', 123 + '123' / 3 FROM DUAL; -- 246 / 164
+SELECT TO_NUMBER('123') / 3 FROM DUAL; -- 41('123'을 숫자로 변환)
 
 
 
