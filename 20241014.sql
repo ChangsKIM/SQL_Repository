@@ -69,8 +69,17 @@ SELECT LTRIM('AAABBBCCCDDDCCCBBBAAA', 'AB') FROM DUAL;
 
 -- CONCAT 두 문자열을 연결
 SELECT CONCAT('HELLO', 'WORLD') FROM DUAL; -- 2개만 가능
+-- || 양 쪽에 있는 문자를 하나로 합쳐줌
 SELECT 'HELLO' || ' ' || 'WORLD' FROM DUAL; -- 뭐든지 가능함
+-- PERSON 테이블에서 내용을 김철수-20 이런 식으로 배열
 
+-- 모든 테이블 DROP SQL문 작성
+SELECT 'DROP TABLE' || TABLE_NAME || ';' FROM USER_TABLE
+
+-- SUVSTR 문자열 추출 : 문자열 부분 추출
+SELECT SUBSTR('1234567890', 5, 4) FROM DUAL; -- 5번째부터 + 4번째까지 추출
+SELECT SUBSTR ('안녕하세요', 1,2) FROM DUAL;
+SELECT SUBSTR('ABCDEFG', 2,3) FROM DUAL; 
 
 
 ------------------------------------------------------
