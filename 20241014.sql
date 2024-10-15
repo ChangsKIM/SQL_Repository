@@ -64,7 +64,41 @@ SELECT LENGTH(TRIM('   A   B   C   D   E   ')),LENGTH('   A   B   C   D   E   ')
 --LTRIM, RTRIM ; 좌우에 지정한 문자 제거
 SELECT LTRIM('AAABBBCCCDDDCCCBBBAAA', 'A') FROM DUAL;
 SELECT RTRIM('AAABBBCCCDDDCCCBBBAAA', 'A') FROM DUAL;
+SELECT RTRIM('AAABBBCCCDDDCCCBBBAAA', 'AB') FROM DUAL;
+SELECT LTRIM('AAABBBCCCDDDCCCBBBAAA', 'AB') FROM DUAL;
 
+
+------------------------------------------------------
+
+-- 숫자열 함수
+
+-- ROUND ; 지정한 숫자만큼 해당 숫자의 자릿수에서 반올림
+-- 1 2 3 . 4 5 6
+SELECT ROUND (123.456,-2) FROM DUAL; -- 100
+SELECT ROUND (123.456,-1) FROM DUAL; -- 120
+SELECT ROUND (123.456,0) FROM DUAL; -- 123
+SELECT ROUND (123.456,1) FROM DUAL; -- 123.5
+SELECT ROUND (123.456,2) FROM DUAL; -- 123.46
+
+-- CEIL ; 올림 / FLOOR ; 내림
+SELECT CEIL(123.456), FLOOR(123.456) FROM DUAL; -- 124 / 123
+  
+-- TRUNC ; 숫자를 지정한 자릿수로 자름
+SELECT TRUNC(123.456,-2) FROM DUAL; -- 100
+SELECT TRUNC(123.456,-1) FROM DUAL; -- 120
+SELECT TRUNC(123.456,0) FROM DUAL; -- 123
+SELECT TRUNC(123.456,1) FROM DUAL; -- 123.4
+SELECT TRUNC(123.456,2) FROM DUAL; -- 123.45
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------
 -- 연습문제
 -- 1. 제품 테이블 : 샘플 데이터 50건 - 제품번호, 제품명, 제조사번호, 금액
 -- 2. 제조사 테이블 : 샘플 데이터 5건 - 제조사번호, 제조사명
