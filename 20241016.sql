@@ -130,12 +130,111 @@ SELECT
 	SUM(STD_SCORE) AS 평점총합
 FROM STUDENT
 
+-- CUBE 함수
+-- 제공된 모든 컬럼의 모든 조함에 대한 집계 결과를 생성하는 함수
+-- CUBE(A,B)
+-- A에 대한 집계
+-- B에 대한 집계
+-- A, B에 대한 집계
+-- 전체 집계
+SELECT 
+    SUBSTR(STD_NO,1,4) AS YEAR, STD_MAJOR, STD_GENDER,
+    COUNT(*) AS STD_COUNT, 
+    TRUNC(AVG(STD_SCORE),2) AS STD_AVG_SCORE,
+    SUM(STD_SCORE) AS STD_SUM_SCORE
+FROM STUDENT
+GROUP BY CUBE (SUBSTR(STD_NO,1,4), STD_MAJOR, STD_GENDER);
 
-SELECT * FROM STUDENT;
 
+-- ROLLUP
+-- 계층적인 데이터 집계를 생성
+-- 상위 수준의 요약정보를 상세한 수준으로 내려가면서 데이터를 집계
+-- ROLLUP(A, B)
+-- A, B에 대한 집계 결과
+-- A에 대한 집계 결과
+-- 전체 결과
+SELECT 
+    SUBSTR(STD_NO,1,4) AS YEAR, STD_MAJOR, STD_GENDER,
+    COUNT(*) AS STD_COUNT, 
+    TRUNC(AVG(STD_SCORE),2) AS STD_AVG_SCORE,
+    SUM(STD_SCORE) AS STD_SUM_SCORE
+FROM STUDENT
+GROUP BY ROLLUP (SUBSTR(STD_NO,1,4), STD_MAJOR, STD_GENDER);
 
+-- 입학년도, 학과별, 성씨를 기준으로 학생 인원수, 평점 평균 조회
+-- 단, 입학년도는 학번 1~4자리, 평점은 평균 소수 둘째자리까지 출력
+SELECT 
+SUBSTR(STD_NO,1,4) AS 입학년도, 
+STD_MAJOR AS 학과명, 
+SUBSTR(STD_NAME,1,1) AS 성씨, 
+COUNT(*) AS 인원수, 
+TRUNC(AVG(STD_SCORE),2) AS "평점 평균" 
+FROM STUDENT 
+GROUP BY SUBSTR(STD_NO, 1, 4), STD_MAJOR, SUBSTR(STD_NAME,1,1);
 
+-- CUBE
+SELECT 
+SUBSTR(STD_NO,1,4) AS 입학년도, 
+STD_MAJOR AS 학과명, 
+SUBSTR(STD_NAME,1,1) AS 성씨, 
+COUNT(*) AS 인원수, 
+TRUNC(AVG(STD_SCORE),2) AS "평점 평균" 
+FROM STUDENT 
+GROUP BY CUBE (SUBSTR(STD_NO, 1, 4), STD_MAJOR, SUBSTR(STD_NAME,1,1));
+-- ROLLUP
+SELECT 
+SUBSTR(STD_NO,1,4) AS 입학년도, 
+STD_MAJOR AS 학과명, 
+SUBSTR(STD_NAME,1,1) AS 성씨, 
+COUNT(*) AS 인원수, 
+TRUNC(AVG(STD_SCORE),2) AS "평점 평균" 
+FROM STUDENT 
+GROUP BY ROLLUP(SUBSTR(STD_NO, 1, 4), STD_MAJOR, SUBSTR(STD_NAME,1,1));
 
+-- GROUPING SETS
+-- 특정 항목에 대한 집계하는 함수
+-- GROUPING SETS(A, B)
+-- A 그룹
+-- B 그룹
+-- GROUPING SETS(A,B,())
+-- A그룹
+-- B그룹
+-- 전체 집계(총계)
+-- GROUPING SETS(A,ROLLUP(B,C))
+-- A그룹
+-- B그룹, C그룹
+-- B그룹
+-- 전체 집계
+
+SELECT 
+SUBSTR(STD_NO,1,4) AS 입학년도, 
+STD_MAJOR AS 학과명, 
+SUBSTR(STD_NAME,1,1) AS 성씨, 
+COUNT(*) AS 인원수, 
+TRUNC(AVG(STD_SCORE),2) AS "평점 평균" 
+FROM STUDENT 
+GROUP BY GROUPING SETS(SUBSTR(STD_NO, 1, 4), STD_MAJOR, SUBSTR(STD_NAME,1,1));
+
+-- EX 01)
+SELECT 
+	SUBSTR(STD_NO,1,4) AS 입학년도, 
+	STD_MAJOR AS 학과명, 
+	STD_GENDER AS 성별,
+--	SUBSTR(STD_NAME,1,1) AS 성씨, 
+	COUNT(*) AS 인원수, 
+	TRUNC(AVG(STD_SCORE),2) AS "평점 평균" 
+FROM STUDENT 
+GROUP BY GROUPING SETS(
+	SUBSTR(STD_NO, 1, 4), ROLLUP(STD_MAJOR, STD_GENDER));
+
+-- EX 02)
+SELECT SUBSTR(STD_NO,1,4) AS 입학년도, COUNT(*) AS 인원수, AVG(STD_SCORE) AS "학점 평균",
+--	STD_MAJOR AS 학과명, 
+--	STD_GENDER AS 성별,
+--	SUBSTR(STD_NAME,1,1) AS 성씨, 
+--	TRUNC(AVG(STD_SCORE),2) AS "평점 평균" 
+FROM STUDENT 
+GROUP BY GROUPING SETS(SUBSTR(STD_NO, 1, 4), ());
 
 
 
