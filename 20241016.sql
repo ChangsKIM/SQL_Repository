@@ -54,9 +54,84 @@ FROM STUDENT
 GROUP BY MAJOR_NAME; HAVING COUNT(*) >=3;
 
 
+--
+-- 학번 2020-2024 00008자리 / 성별 추가 / 각 학년별로 100건씩 저장
+-- 학생 테이블 생성
+CREATE TABLE STUDENT(
+	STD_NO CHAR(8) PRIMARY KEY,
+	STD_NAME VARCHAR2(30) NOT NULL,
+	STD_MAJOR VARCHAR2(30),
+	STD_SCORE NUMBER(3,2) DEFAULT 0 NOT NULL,
+	STD_GENDER CHAR(1)
+);
+
+-- 1. 입학한 년도별, 학과별, 성별로 인원수, 평점 평균, 평점 총합을 조회
+SELECT 
+    SUBSTR(STD_NO, 1, 4) AS 입학년도,
+    STD_MAJOR AS 학과,
+    STD_GENDER AS 성별,
+    COUNT(*) AS 인원수,
+    TRUNC(AVG(STD_SCORE),2) AS 평점평균,
+    SUM(STD_SCORE) AS 평점총합
+FROM STUDENT
+GROUP BY SUBSTR(STD_NO, 1, 4), STD_MAJOR, STD_GENDER
+
+-- 2. 입학한 년도별, 학과별로 인원수, 평점 평균, 평점 총합을 조회
+SELECT 
+	SUBSTR(STD_NO, 1, 4) AS 입학년도,
+	STD_MAJOR AS 학과,
+	COUNT(*) AS 인원수,
+	TRUNC(AVG(STD_SCORE), 2) AS 평점평균,
+	SUM(STD_SCORE) AS 평점총합
+FROM STUDENT
+GROUP BY SUBSTR(STD_NO,1,4), STD_MAJOR; 
+
+-- 3. 입학한 년도별, 인원수, 평점 평균, 평점 총합을 조회
+SELECT 
+	SUBSTR(STD_NO, 1, 4) AS 입학년도,
+	COUNT(*) AS 인원수,
+	TRUNC(AVG(STD_SCORE), 2) AS 평점평균,
+	SUM(STD_SCORE) AS 평점총합
+FROM STUDENT
+GROUP BY SUBSTR(STD_NO,1,4); 
+
+-- 4. 학과별로 인원수, 평점 평균, 평점 총합을 조회
+SELECT 
+	STD_MAJOR AS 학과,
+	COUNT(*) AS 인원수,
+	TRUNC(AVG(STD_SCORE), 2) AS 평점평균,
+	SUM(STD_SCORE) AS 평점총합
+FROM STUDENT
+GROUP BY STD_MAJOR;
+
+-- 5. 학과별, 성별로 인원수, 평점 평균, 평점 총합을 조회
+SELECT 
+	STD_MAJOR AS 학과,
+	STD_GENDER AS 성별,
+	COUNT(*) AS 인원수,
+	TRUNC(AVG(STD_SCORE), 2) AS 평점평균,
+	SUM(STD_SCORE) AS 평점총합
+FROM STUDENT
+GROUP BY STD_MAJOR, STD_GENDER;
+
+-- 6. 성별로 인원수, 평점 평균, 평점 총합을 조회
+SELECT 
+	STD_GENDER AS 성별,
+	COUNT(*) AS 인원수,
+	TRUNC(AVG(STD_SCORE), 2) AS 평점평균,
+	SUM(STD_SCORE) AS 평점총합
+FROM STUDENT
+GROUP BY STD_GENDER;
+
+-- 7. 전체 인원수, 평점 평균, 평점 총합을 조회
+SELECT 
+	COUNT(*) AS 인원수,
+	TRUNC(AVG(STD_SCORE), 2) AS 평점평균,
+	SUM(STD_SCORE) AS 평점총합
+FROM STUDENT
 
 
-
+SELECT * FROM STUDENT;
 
 
 
