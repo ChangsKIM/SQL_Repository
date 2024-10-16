@@ -81,8 +81,13 @@ SELECT * FROM STUDENT;
 -- 04. 학생 테이블의 학과명 컬럼 삭제
 ALTER TABLE STUDENT DROP COLUMN STD_MAJOR;
 
--- 05. 학생정보 조회시, 학번 이름 학과명 평점 조회
+-- 05. 학생정보 조회시 학번, 이름, 학과명, 평점 조회
+-- 동일 조인
 SELECT S.STD_NO, S.STD_NAME, M.MAJOR_NAME, S.STD_SCORE
 FROM STUDENT S JOIN MAJOR M ON S.MAJOR_NO = M.MAJOR_NO ;
 
+-- 자연 조인
+SELECT * FROM STUDENT NATURAL JOIN MAJOR;
 
+-- 크로스 조인
+SELECT * FROM STUDENT CROSS JOIN MAJOR;
