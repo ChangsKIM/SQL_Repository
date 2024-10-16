@@ -236,7 +236,8 @@ SELECT S.*, DENSE_RANK() OVER(PARTITION BY S.MAJOR_NAME ORDER BY SCORE DESC) AS 
 -- NULL 값 처리 함수
 -- NVL : 첫번째 값이 NULL일 땐 두번재 값을 리턴, NULL이 아닐시 현재값 리턴
 SELECT NVL(NULL, '널값'), NVL('100', '널값') FROM DUAL;
-SELECT NVL2((NULL, '널이 아닐때 값', '널일 때 값'), NVL2('100', '널이 아닐 때 값', '널일 때 값') 
+SELECT NVL2((NULL, '널이 아닐때 값', '널일 때 값'), 
+NVL2('100', '널이 아닐 때 값', '널일 때 값') FROM DUAL; 
 
 
 
