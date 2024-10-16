@@ -237,6 +237,24 @@ FROM STUDENT
 GROUP BY GROUPING SETS(SUBSTR(STD_NO, 1, 4), ());
 
 
+-- 연습문제
+-- 사원데이터에서 부서별, 직급별, 인원수, 연봉 평균(수수점 x)
+SELECT 
+	EP_MAJOR AS 부서,
+	EP_TITLE AS 직급,
+	COUNT(*) AS 인원수,
+	TRUNC(AVG(EP_SALRY)) AS "평균연봉"
+FROM EMPLOYEE
+GROUP BY GROUPING SETS(EP_MAJOR, EP_TITLE);
 
+-- 사원데이터 부서별, 인원수, 연봉 평균(소수점 X)
+SELECT 
+	EP_MAJOR AS 부서,
+--	EP_TITLE AS 직급,
+	COUNT(*) AS 인원수,
+	TRUNC(AVG(EP_SALRY),0) AS "평균연봉"
+FROM EMPLOYEE
+GROUP BY GROUPING SETS(EP_MAJOR);
+	
 
 
