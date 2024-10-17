@@ -178,10 +178,58 @@ SELECT
 FROM STUDENT S 
 JOIN STUDENT_SCHOLARSHIP SS ON S.STD_NO = SS.STD_NO
 JOIN MAJOR m ON S.MAJOR_NO = M.MAJOR_NO; 
+-- FROM 순서는 상관 없음 / 조인 결정은 ON에서 실시 / ON에서 조인을 실시하면 SELECT에서 출력함
 
-
+-- 학과 테이블 데이터 2건 추가
+INSERT INTO MAJOR VALUES('A9', '국어국문학과');
+INSERT INTO MAJOR VALUES('B2', '생활체육학과');
 	
+-- 외부 조인(OUTER JOIN)
+-- 조인 조건에 맞지 않는 행도 결과에 포함시킬 때 사용하는 조인
+-- A : A=1,B=2,C=3,D=4 
+-- B : A=+,B=-,C=*,F=/
+
+-- LEFT OUTER JOIN
+SELECT A.*, B.*
+FROM A LEFT OUTER JOIN B ON A.CODE = B.CODE ;
 
 
+-- RIGHT OUTER JOIN
+SELECT A.*, B.*
+FROM A RIGHT OUTER JOIN B ON A.CODE = B.CODE ;
 
+-- FULL JOIN 
+SELECT A.*, B.*
+FROM A 
+FULL OUTER JOIN B ON A.CODE = B.CODE ;
 
+---------------------------------------------------------------------------
+---------------------------------------------------------------------------
+
+-- 연습문제01
+-- 학생 정보 출력시 학생테이블, 학과 테이블에 있는 모든 데이터를 조회
+-- 모든 컬럼 조회, 연결되지 않는 학과도 전부 조회
+SELECT
+S.*, M.*
+FROM STUDENT S RIGHT OUTER JOIN MAJOR M
+ON S.MAJOR_NO = M.MAJOR_NO; -- STE_NO, STD_NAME, STD_SCORE, STD_GENDER = NULL
+
+-- 연습문제02
+-- 학생이 한명도 없는 학과를 조회
+SELECT
+    M.*, S.STD_NO 
+FROM STUDENT S 
+RIGHT OUTER JOIN MAJOR M 
+ON S.MAJOR_NO = M.MAJOR_NO
+WHERE S.STD_NAME IS NULL;
+
+-- 연습문제03
+-- 장학금을 받지 못한 학생들의 정보를 조회
+SELECT
+	SS.SCHOLARSHIP_NO,
+	S.STD_NAME, 
+	S.STD_NO,
+	SS.MONEY
+FROM STUDENT S LEFT OUTER JOIN STUDENT_SCHOLARSHIP SS
+ON S.STD_NO = SS.STD_NO
+WHERE SS.SCHOLARSHIP_NO IS NULL ;
