@@ -335,7 +335,28 @@ UPDATE CAR C SET C.CAR_MAKER_CODE =
 	WHERE C.CAR_MAKER = CM.CAR_MAKER_NAME);
 
 -- 자동차 테이블에 제조사명 컬럼 삭제
+ALTER TABLE CAR DROP COLUMN CAR_MAKER;
 
 
+-- 자동차 정보 조회시 ; 자동차 번호, 자동차 모델명, 제조사명, 제조년도, 금액
+SELECT 
+	c.CAR_ID ,
+	cm.CAR_MAKER_NAME ,
+	c.CAR_MAKER_CODE ,
+	c.CAR_MAKE_YEAR ,
+	c.CAR_PRICE 
+FROM CAR c 
+LEFT OUTER JOIN CAR_MAKER cm ON c.CAR_MAKER_CODE = cm.CAR_MARKER_CODE ;
 
+
+-- 자동차 제조사별 자동차 제품 개수, 평균가, 최고가, 최소가 조회
+SELECT 
+	cm.CAR_MAKER_NAME ,
+	TRUNC(AVG(c.CAR_PRICE)), COUNT(*), 
+	MAX(c.CAR_PRICE),
+	MIN(c.CAR_PRICE)	
+FROM CAR c 
+LEFT OUTER JOIN CAR_MAKER cm 
+ON c.CAR_MAKER_CODE = cm.CAR_MARKER_CODE 
+GROUP BY cm.CAR_MAKER_NAME ;
 
