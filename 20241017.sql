@@ -1,3 +1,5 @@
+-- 2024/10/17
+
 -- 조인
 -- inner join : 두 테이블에서 조건이 일치하는 행만 반환
 -- 동일, 자연, 크로스 조인이 있음
@@ -443,7 +445,74 @@ JOIN CAR_MAKER CM
 ON C.CAR_MAKER_CODE = CM.CAR_MARKER_CODE
 GROUP BY TO_CHAR(CS.CAR_SELL_DATE, 'YYYY/Q') ;
 
+--------------------------------------------------------------------
+--------------------------------------------------------------------
 
+-- 2024/10/18
 
+-- 제약조건 
+SELECT * FROM USER_CONSTRAINTS;
 
+-- 기본키 
+-- ALTER TABLE 테이블명 ADD CONSTRAINTS 제약명 PRIMARY KEY(기본키로 지정할 컬럼)
+DROP TABLE PERSON;
 
+-- PERSON TABLE 생성
+CREATE TABLE PERSON(
+	PID CHAR(4),
+	PNAME VARCHAR2(30 BYTE),
+	AGE NUMBER(3, 0)
+);
+
+-- 제약조건
+ALTER TABLE PERSON 
+ADD CONSTRAINT PERSON_PID_PK
+PRIMARY KEY(PID);
+
+-- 제약조건 확인
+SELECT * FROM USER_CONSTRAINTS;
+
+-- 데이터 추가
+
+INSERT INTO PERSON VALUES('0001','홍길동',20);
+INSERT INTO PERSON VALUES('0002','김길동',30);
+INSERT INTO PERSON VALUES('0003','이길동',40);
+INSERT INTO PERSON VALUES('0004','박길동',50);
+
+-- 외래키
+ALTER TABLE 테이블명 ADD CONSTRAINTS 제약조건명 
+FOREIGN KEY(외래키 지정할 컬럼명) -- 서브
+REFERENCES 외래키로 연결될 테이블명(참조할 테이블의 기본키) -- 메인
+[ON DELETE CASCADE] | [ON DELETE RESTRICT] | [ON DELETE SET NULL]
+-- ON DELETE CASCADE ; 부모 테이블에서 행이 삭제될 때, 
+-- ON DELETE RESTRICT ; 부모 테이블에서 행을 삭제하려고 할 때, 그 행을 참조하는 자식 테이블에 데이터가 남아 있다면 삭제를 제한
+-- ON DELETE SET NULL ; 부모 테이블에서 행이 삭제될 때, 그 행을 참조하는 자식 테이블의 외래키 값을 NULL로 설정
+
+-- EX)
+CREATE TABLE PERSON_ORDER(
+	P_ORDER_NO NUMBER(5),
+	P_ORDER_MEMO VARCHAR2(300),
+	P_ID CHAR(4)
+);
+-- PERSON_ORDER에 P_ORDER_NO를 기본키로 작성
+ALTER TABLE PERSON_ORDER 
+ADD CONSTRAINT PERSON_ORDER_PO_NO_PK
+PRIMARY KEY(P_ORDER_NO);
+
+-- 제약조건 확인
+SELECT * FROM USER_CONSTRAINTS;
+
+-- PERSON_ORDER에 PID를 외래키 설정, PERSON에 있는 PID와 연결
+ALTER TABLE PERSON_ORDER ADD CONSTRAINT PERSON_ORDER_PID_FK
+FOREIGN KEY(P_ID) REFERENCES PERSON(PID);
+
+-- 데이터 추가(외래키 확인)
+INSERT INTO PERSON_ORDER VALUES(1, '지시 내용01', '0001');
+INSERT INTO PERSON_ORDER VALUES(2, '지시 내용02', '0002');
+INSERT INTO PERSON_ORDER VALUES(3, '지시 내용03', '0003');
+INSERT INTO PERSON_ORDER VALUES(4, '지시 내용04', '0004');
+-- 에러, PERSON 테이블에 해당 PID 값이 없을 때 > 참조 무결성
+INSERT INTO PERSON_ORDER VALUES(5, '지시 내용05', '0005');
+
+SELECT * FROM PERSON;
+SELECT * FROM PERSON_ORDER;
