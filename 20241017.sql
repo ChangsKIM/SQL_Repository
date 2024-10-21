@@ -788,4 +788,40 @@ SELECT S.STD_NO , S.STD_NAME ,
 FROM STUDENT s ;
 
 
+-- EX03) 평점이 최고점인 학생과 최저점인 학생 조회
+-- 조회할 컬럼은 학번, 이름, 학과명, 평점, 성별
+
+SELECT
+	s.STD_NO , s.STD_NAME , m.MAJOR_NAME , s.STD_SCORE , s.STD_GENDER 
+FROM STUDENT s 
+JOIN MAJOR m ON s.MAJOR_NO = m.MAJOR_NO 
+WHERE STD_SCORE IN ((SELECT MAX(STD_SCORE) FROM STUDENT), 
+(SELECT MIN(STD_SCORE) FROM STUDENT));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

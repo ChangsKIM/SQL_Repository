@@ -1,0 +1,169 @@
+-- 2024/10/20 수업
+
+-- INDEX
+-- TABLE에 있는 DATE를 빠르게 검색하기 위한 용도로 나온 DATEBACE 객체
+
+-- 생성한 모든 INDEX 객체 조회
+SELECT * FROM USER_INDEXES;
+
+--작성하는 방법
+-- CREATE [UNIQUE] INDEX 인덱스명 ON 테이블명(컬럼명01, 컬럼02...);
+
+-- PRESON 테이블에 사람이름으로 인덱스 지정
+CREATE INDEX IDX_PERSON_NAME ON PERSON(PNAME);
+
+CREATE UNIQUE INDEX IDX_PERSON_NAME ON PERSON(PNAME);
+INSERT INTO PERSON VALUES('0006', '홍길동', 20); -- 입력 x
+
+-- INDEX 삭제
+DROP INDEX IDX_PERSON_NAME;
+
+-- 리빌딩 작업
+-- 데이터를 추가 삭제 수정등의 작업을 할 때 트리가 한쪽으로 치우쳐지는 현상이 나기 때문
+ALTER INDEX IDX_PERSON_NAME REBUILD;
+
+
+-- CAR_SELL 테이블에 판매날짜에 인덱스 적용
+CREATE INDEX SELL_DATE_INDEX ON CAR_SELL(CAR_SELL_DATE);
+
+-- 사원 테이블에서 이름, 직급, 인덱스를 적용
+CREATE INDEX EMP_IDX ON EMPLOYEE(EMP_NAME, POS_NO, DEPT_NO);
+
+
+----------------------------------------------------------------------------
+
+
+-- 시퀸스(SEQUENCE) 생성
+CREATE SEQUENCE NO_SEQ;
+
+-- 시퀸스 값 가져오기 
+SELECT NO_SEQ.NEXTVAL FROM DUAL;
+
+-- 시퀸스 값 미리보기(마지막 값 출력)
+SELECT NO_SEQ.CURRVAL FROM DUAL;
+
+CREATE SEQUENCE TEST_SEQ
+INCREMENT BY 2
+START WITH 4
+MINVALUE 4
+MAXVALUE 10
+CYCLE -- NOCYCLE ; 10이상에서 멈춤
+NOCACHE;
+--CACHE 2;
+
+SELECT TEST_SEQ.NEXTVAL FROM DUAL;
+
+-- 시퀸스 조회
+SELECT * FROM USER_SEQUENCES;
+
+-- 시퀸스 문제 01
+-- 조건 시퀸스 이름 ; SEQ_EMP_ID / 시작 값 ; 1 / 최대 값 9999 / 증가 값 ; 1 / 캐시 값 ; 20
+CREATE SEQUENCE SEQ_EMP_ID
+START WITH 1
+MAXVALUE 9999
+INCREMENT BY 1
+CACHE 20;
+
+SELECT SEQ_EMP_ID.NEXTVAL FROM DUAL;
+
+
+-- 시퀸스 문제 02
+-- 시퀸스 이름 ; SEQ_DEPT_ID / 시작 값 ; 100 / 최대 값 ; 110 / 최소 값 ; 100 / 증가 값 ; 1 / 순환사용
+CREATE SEQUENCE SEQ_DEPT_ID
+START WITH 100
+MAXVALUE 110
+MINVALUE 100
+INCREMENT BY 1
+CYCLE
+CACHE 2;
+
+
+-- 시퀸스 문제 03
+-- 이름 ; SEQ_ORDER_NO / 시작 값 ; 1000 / 최소 값 ; 500 / 감소 값 ; 10 / 순환 미사용
+CREATE SEQUENCE SEQ_ORDER_NO
+START WITH 1000
+MAXVALUE 1000
+MINVALUE 500
+INCREMENT BY -10
+NOCYCLE ;
+
+SELECT SEQ_ORDER_NO.NEXTVAL FROM dual;
+
+
+----------------------------------------------------------------------------
+
+
+-- 뷰(VIEW)
+-- SQL에서 하나 이상의 테이블 조회 결과를 저장한 가상 테이블, 스토리지 용량 X
+-- 실제 데이터를 저장하지 않으며, 쿼리 결과를 미리 정의해 두어 필요할 때 재사용
+
+-- CREATE OR REPLACE VIEW 뷰명
+-- AS
+-- 조회할 SQL문(SELECT문)
+
+-- VIEW 생성 권한
+GRANT CREATE VIEW TO C##COTT;
+
+
+-- 학생정보 조회. 학번, 이름, 학과명, 평점, 성별
+SELECT 
+	S.STD_NO ,
+	S.STD_NAME ,
+	M.MAJOR_NAME ,
+	S.STD_SCORE ,
+	S.STD_GENDER 
+FROM STUDENT s JOIN MAJOR m ON S.MAJOR_NO = M.MAJOR_NO ;
+
+
+-- 뷰로 만들기
+CREATE OR REPLACE VIEW STUDENT_VIEW
+AS
+SELECT 
+	S.STD_NO ,
+	S.STD_NAME ,
+	M.MAJOR_NAME ,
+	S.STD_SCORE,
+	S.STD_GENDER
+FROM STUDENT s JOIN MAJOR m ON S.MAJOR_NO = M.MAJOR_NO ;
+
+-- 뷰 조회
+SELECT * FROM STUDENT_VIEW;
+
+-- 학과별 인원수
+SELECT 
+MAJOR_NAME, COUNT(*) 
+FROM STUDENT_VIEW  -- << 뷰명칭 입력
+GROUP BY MAJOR_NAME;
+
+-- 장학금을 받는 학생들의 정보를 저장하는 뷰
+-- 장하금 번호, 금액, 학번, 금액, 학과명, 성별, 평점
+
+CREATE OR REPLACE VIEW SCHOLARSHIP_VIEW
+AS
+SELECT 
+	SS.SCHOLARSHIP_NO ,
+	SS.STD_NO ,
+	SS.MONEY ,
+	M.MAJOR_NAME ,
+	S.STD_GENDER ,
+	S.STD_SCORE 
+FROM STUDENT s 
+JOIN STUDENT_SCHOLARSHIP ss ON S.STD_NO = SS.STD_NO 
+JOIN MAJOR m ON S.MAJOR_NO = M.MAJOR_NO
+ORDER BY SS.SCHOLARSHIP_NO ;
+
+SELECT * FROM SCHOLARSHIP_VIEW;
+
+--
+SELECT 
+MAJOR_NAME, COUNT(*) 
+FROM SCHOLARSHIP_VIEW
+GROUP BY MAJOR_NAME;
+
+-- 뷰 목록 확인
+SELECT * FROM USER_VIEWS;
+-- 뷰 삭제
+DROP VIEW SCHOLRSHIP_VIEW;
+
+
+
