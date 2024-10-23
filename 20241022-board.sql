@@ -1,19 +1,19 @@
 -- 01 테이블 생성 및 기본키, 외래키 설정
 -- 회원 테이블
 CREATE TABLE board_member (
-    id VARCHAR2(50) NOT NULL,          -- 회원 아이디
-    password CHAR(128) NOT NULL,       -- 암호
-    username VARCHAR2(50) NOT NULL,    -- 이름
-    nickname VARCHAR2(50) NOT NULL,    -- 닉네임
+    id VARCHAR2(50) ,          -- 회원 아이디
+    password CHAR(128) ,       -- 암호
+    username VARCHAR2(50) ,    -- 이름
+    nickname VARCHAR2(50) ,    -- 닉네임
     PRIMARY KEY (id)                   -- 기본키 설정
 );
 
 -- 게시판 테이블
 CREATE TABLE board (
-    bno NUMBER NOT NULL,               -- 글 번호
-    id VARCHAR2(50) NOT NULL,          -- 회원 아이디 (외래키)
-    title VARCHAR2(150) NOT NULL,      -- 제목
-    content CLOB NOT NULL,             -- 내용
+    bno NUMBER ,               -- 글 번호
+    id VARCHAR2(50) ,          -- 회원 아이디 (외래키)
+    title VARCHAR2(150) ,      -- 목
+    content CLOB ,             -- 내용
     write_date DATE DEFAULT SYSDATE,   -- 작성일
     write_update_date DATE DEFAULT SYSDATE, -- 수정일
     bcount NUMBER DEFAULT 0,           -- 조회수
@@ -23,8 +23,8 @@ CREATE TABLE board (
 
 -- 게시글 좋아요 테이블
 CREATE TABLE board_content_like (
-    bno NUMBER NOT NULL,               -- 글 번호 (외래키)
-    id VARCHAR2(50) NOT NULL,          -- 회원 아이디 (외래키)
+    bno NUMBER ,               -- 글 번호 (외래키)
+    id VARCHAR2(50) ,          -- 회원 아이디 (외래키)
     PRIMARY KEY (bno, id),             -- 복합키 설정 (글 번호, 회원 아이디)
     FOREIGN KEY (bno) REFERENCES board(bno),  -- 게시판 테이블 참조
     FOREIGN KEY (id) REFERENCES board_member(id) -- 회원 테이블 참조
@@ -32,8 +32,8 @@ CREATE TABLE board_content_like (
 
 -- 게시글 싫어요 테이블
 CREATE TABLE board_content_hate (
-    bno NUMBER NOT NULL,               -- 글 번호 (외래키)
-    id VARCHAR2(50) NOT NULL,          -- 회원 아이디 (외래키)
+    bno NUMBER ,               -- 글 번호 (외래키)
+    id VARCHAR2(50) ,          -- 회원 아이디 (외래키)
     PRIMARY KEY (bno, id),             -- 복합키 설정 (글 번호, 회원 아이디)
     FOREIGN KEY (bno) REFERENCES board(bno),  -- 게시판 테이블 참조
     FOREIGN KEY (id) REFERENCES board_member(id) -- 회원 테이블 참조
@@ -41,10 +41,10 @@ CREATE TABLE board_content_hate (
 
 -- 댓글 테이블
 CREATE TABLE board_comment (
-    cno NUMBER NOT NULL,               -- 댓글 번호
-    bno NUMBER NOT NULL,               -- 글 번호 (외래키)
-    id VARCHAR2(50) NOT NULL,          -- 회원 아이디 (외래키)
-    content VARCHAR2(1000) NOT NULL,   -- 댓글 내용
+    cno NUMBER,               -- 댓글 번호
+    bno NUMBER ,               -- 글 번호 (외래키)
+    id VARCHAR2(50) ,          -- 회원 아이디 (외래키)
+    content VARCHAR2(1000) ,   -- 댓글 내용
     cdate DATE DEFAULT SYSDATE,        -- 댓글 작성일
     PRIMARY KEY (cno),                 -- 기본키 설정
     FOREIGN KEY (bno) REFERENCES board(bno),  -- 게시판 테이블 참조
@@ -53,8 +53,8 @@ CREATE TABLE board_comment (
 
 -- 댓글 좋아요 테이블
 CREATE TABLE board_comment_like (
-    cno NUMBER NOT NULL,               -- 댓글 번호 (외래키)
-    id VARCHAR2(50) NOT NULL,          -- 회원 아이디 (외래키)
+    cno NUMBER ,               -- 댓글 번호 (외래키)
+    id VARCHAR2(50),          -- 회원 아이디 (외래키)
     PRIMARY KEY (cno, id),             -- 복합키 설정 (댓글 번호, 회원 아이디)
     FOREIGN KEY (cno) REFERENCES board_comment(cno),  -- 댓글 테이블 참조
     FOREIGN KEY (id) REFERENCES board_member(id) -- 회원 테이블 참조
@@ -62,8 +62,8 @@ CREATE TABLE board_comment_like (
 
 -- 댓글 싫어요 테이블
 CREATE TABLE board_comment_hate (
-    cno NUMBER NOT NULL,               -- 댓글 번호 (외래키)
-    id VARCHAR2(50) NOT NULL,          -- 회원 아이디 (외래키)
+    cno NUMBER ,               -- 댓글 번호 (외래키)
+    id VARCHAR2(50) ,          -- 회원 아이디 (외래키)
     PRIMARY KEY (cno, id),             -- 복합키 설정 (댓글 번호, 회원 아이디)
     FOREIGN KEY (cno) REFERENCES board_comment(cno),  -- 댓글 테이블 참조
     FOREIGN KEY (id) REFERENCES board_member(id) -- 회원 테이블 참조
@@ -71,9 +71,9 @@ CREATE TABLE board_comment_hate (
 
 -- 첨부파일 테이블
 CREATE TABLE board_file (
-    fno CHAR(10) NOT NULL,             -- 파일 번호
-    bno NUMBER NOT NULL,               -- 글 번호 (외래키)
-    fpath VARCHAR2(256) NULL,          -- 파일 경로
+    fno CHAR(10) ,             -- 파일 번호
+    bno NUMBER ,               -- 글 번호 (외래키)
+    fpath VARCHAR2(256) ,          -- 파일 경로
     PRIMARY KEY (fno),                 -- 기본키 설정
     FOREIGN KEY (bno) REFERENCES board(bno) -- 게시판 테이블 참조
 );
@@ -144,11 +144,13 @@ MAXVALUE 9999999
 INCREMENT BY 1
 NOCYCLE;
 
+SELECT * FROM USER_SEQUENCES;
+SELECT * FROM BOARD;
+SELECT * FROM BOARD_COMMENT; 
 
 -- 03. 샘플 데이터 저장
 
-
-
+-- 회원 데이터
 
 
 -- 04. 암호화
@@ -169,154 +171,53 @@ FROM dual;
 
 
 
+SELECT 
+	b.*, bm.NICKNAME	
+FROM BOARD b 
+JOIN BOARD_MEMBER bm on b.ID = bm.ID; 
+
+
+-- 글번호, 제목, 작성자, 작성자 닉네임, 조회수, 작성일, 글내용, 좋아요, 싫어요
+-- 글 번호별 좋아요 개수 조회
+
+SELECT 
+	bcl.BNO ,
+	COUNT(*) AS clike
+FROM BOARD_CONTENT_LIKE bcl 
+GROUP BY bcl.BNO ;
+
+SELECT
+	bch.BNO ,
+	COUNT(*) AS dislike
+FROM BOARD_CONTENT_HATE bch
+GROUP BY bch.BNO ;
+
+
+--위에 SQL문을 기준으로 글번호 기준으로 내림차순 정렬
+SELECT B.*, BM.NICKNAME, NVL(BLIKE,0) AS BLIKE , NVL(BHATE,0) AS BHATE
+FROM BOARD B JOIN BOARD_MEMBER BM ON B.ID = BM.ID
+LEFT OUTER JOIN (SELECT BNO, COUNT(*) AS BLIKE FROM BOARD_CONTENT_LIKE GROUP BY BNO) BL
+ON BL.BNO = B.BNO
+LEFT OUTER JOIN (SELECT BNO, COUNT(*) AS BHATE FROM BOARD_CONTENT_HATE GROUP BY BNO) BH
+ON BH.BNO = B.BNO ORDER BY B.BNO DESC;
+
+
+
+--뷰 생성
+CREATE OR REPLACE VIEW BOARD_VIEW
+AS
+SELECT B.*, BM.NICKNAME, NVL(BLIKE,0) AS BLIKE , NVL(BHATE,0) AS BHATE
+FROM BOARD B JOIN BOARD_MEMBER BM ON B.ID = BM.ID
+LEFT OUTER JOIN (SELECT BNO, COUNT(*) AS BLIKE FROM BOARD_CONTENT_LIKE GROUP BY BNO) BL
+ON BL.BNO = B.BNO
+LEFT OUTER JOIN (SELECT BNO, COUNT(*) AS BHATE FROM BOARD_CONTENT_HATE GROUP BY BNO) BH
+ON BH.BNO = B.BNO ORDER BY B.BNO DESC;
+
+SELECT * FROM BOARD_VIEW;
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--- 1. 테이블 생성
--- 1-1. 회원 테이블 생성
-CREATE TABLE board_member(
-	id varchar2(50) NOT NULL,  -- 회원 아이디
-	password char(128) NOT NULL, -- 암호
-	username varchar2(50) NOT NULL, -- 회원 이름
-	nickname varchar2(50) NOT NULL, -- 닉네임
-	PRIMARY KEY (id) 
-);
--- 1-2. 게시판 테이블 생성
-CREATE TABLE board(
-	bno NUMBER NOT NULL,  -- 글번호
-	id varchar2(50) NOT NULL,  -- 회원 아이디
-	title varchar2(150) NOT NULL,  -- 글 제목 
-	bcontent clob NOT NULL,  -- 글 내용
-	write_date DATE DEFAULT sysdate,  -- 작성일자
-	write_updte_date DATE DEFAULT sysdate, -- 수정일자 
-	bcount NUMBER DEFAULT 0,  -- 조회수
-	PRIMARY KEY (bno),
-	FOREIGN KEY (id) REFERENCES board_member(id)
-)
-
--- 1-2-1. 게시글 좋아요 테이블 생성
-CREATE TABLE board_like (
-    bno NUMBER NOT NULL,  -- 글 번호
-    id VARCHAR(250) NOT NULL,  -- 회원 아이디
-    PRIMARY KEY (bno, id),
-    FOREIGN KEY (bno) REFERENCES board(bno),
-    FOREIGN KEY (id) REFERENCES board_member(id)
-);
-
--- 1-2-2. 게시글 싫어요 테이블 생성
-CREATE TABLE board_dislike (
-    bno NUMBER NOT NULL,  -- 글 번호
-    id VARCHAR(250) NOT NULL,  -- 회원 아이디
-    PRIMARY KEY (bno, id),
-    FOREIGN KEY (bno) REFERENCES board(bno),
-    FOREIGN KEY (id) REFERENCES board_member(id)
-);
-
--- 1-3. 댓글 테이블 생성
-CREATE TABLE comment (
-    cno NUMBER NOT NULL,  -- 댓글번호
-    bno NUMBER NOT NULL,  -- 글 번호
-    id VARCHAR(250) NOT NULL,  - 회원 아이디
-    content CLOB NOT NULL,  -- 댓글 내용
-    cdate DATE DEFAULT SYSDATE,  -- 작성일자
-    PRIMARY KEY (cno),
-    FOREIGN KEY (bno) REFERENCES board(bno),
-    FOREIGN KEY (id) REFERENCES board_member(id)
-);
-
--- 1-3-1. 댓글 좋아요 테이블 생성
-CREATE TABLE board_comment_like (
-    cno NUMBER NOT NULL,  -- 글 번호
-    id VARCHAR(250) NOT NULL,  -- 회원 아이디
-    PRIMARY KEY (cno, id),
-    FOREIGN KEY (cno) REFERENCES comment(cno),
-    FOREIGN KEY (id) REFERENCES board_member(id)
-);
-
--- 1-3-2. 댓글 싫어요 테이블 생성
-CREATE TABLE board_comment_dislike (
-    cno NUMBER NOT NULL,  -- 글 번호
-    id VARCHAR(250) NOT NULL,  -- 회원 아이디
-    PRIMARY KEY (cno, id),
-    FOREIGN KEY (cno) REFERENCES comment(cno),
-    FOREIGN KEY (id) REFERENCES board_member(id)
-);
-
--- 1-4. 첨부파일 테이블 생성
-CREATE TABLE board_file (
-    fno CHAR(10) NOT NULL,  -- 파일번호
-    bno NUMBER NOT NULL,  -- 
-    id VARCHAR(250) NOT NULL,
-    fpath VARCHAR(1000) NOT NULL,
-    fname VARCHAR(250),
-    upload_date DATE DEFAULT SYSDATE,
-    PRIMARY KEY (fno),
-    FOREIGN KEY (bno) REFERENCES board(bno),
-    FOREIGN KEY (id) REFERENCES board_member(id)
-);
-
-
--- 2. 제약조건(기본키, 외래키)
--- **기본키 (Primary Key)**는 각 테이블에서 고유한 레코드를 식별하기 위해 사용
--- **외래키 (Foreign Key)**는 다른 테이블과의 관계를 설정
--- 외래키는 위에서 작성한 SQL 코드에 이미 포함
-
-
--- 3. 시퀸스 생성
--- 3-1. 게시글 번호 시퀀스
-CREATE SEQUENCE board_seq
-START WITH 1
-INCREMENT BY 1;
-
--- 3-2. 댓글 번호 시쿼스
-CREATE SEQUENCE comment_seq
-START WITH 1
-INCREMENT BY 1;
-
--- 3-3. 파일번호 시쿼스
-CREATE SEQUENCE file_seq
-START WITH 1
-INCREMENT BY 1;
-
-
--- 4. 샘플 데이터 저장
--- 4-1. 회원 데이터 삽입
-INSERT INTO board_member (id, password, username, nickname)
-VALUES ('user1', 'password_hash', '홍길동', '길동이');
-
--- 4-2. 게이글 데이터 삽입
-INSERT INTO board (bno, id, title, bcontent)
-VALUES (board_seq.NEXTVAL, 'user1', '첫 번째 게시글', '여기에 첫 번째 게시글의 내용을 작성합니다.');
-
--- 4-3. 댓글 데이터 삽입
-INSERT INTO comment (cno, bno, id, content)
-VALUES (comment_seq.NEXTVAL, 1, 'user1', '첫 번째 댓글입니다.');
-
--- 4-4. 첨부파일 데이터 삽입
-INSERT INTO board_file (fno, bno, id, fpath, fname)
-VALUES (file_seq.NEXTVAL, 1, 'user1', '/uploads/file1.txt', 'file1.txt');
 
 
 
