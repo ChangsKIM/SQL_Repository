@@ -3,7 +3,7 @@
 -- 프로시저, 함수, 트리거 등의 형태로 작성을 할 수 있음
 -- 데이터 조작 및 비지니스 로직을 데이터베이스 내에서 직접 처리 할 수 있음
 
--- 함수
+-- 함수 - 실습코드01 :
 CREATE OR REPLACE FUNCTION GET_ODD_EVEN(N IN NUMBER)
 RETURN VARCHAR2 IS 
 	-- 함수에서 사용할 변수를 선언하는 영역
@@ -28,8 +28,7 @@ SELECT
 FROM DUAL;
 
 
--- 실습문제01
-
+-- 함수 - 실습코드02 :
 CREATE OR REPLACE FUNCTION GET_SCORE_GRADE(SCORE IN NUMBER)
 RETURN VARCHAR2
 IS
@@ -66,7 +65,6 @@ EXCEPTION
 		RETURN '알 수 없는 에러';
 END;
 
-
 SELECT 
 	GET_SCORE_GRADE(96) AS 학생01,
 	GET_SCORE_GRADE(72) AS 학생02,
@@ -76,13 +74,10 @@ SELECT
 	GET_SCORE_GRADE(-1) AS 학생06,
 	GET_SCORE_GRADE(61) AS 학생07
 	FROM dual;
-----------------------------------------------
 
--- 실습문제 02
-
+-- 함수 - 실습코드03 :
 -- 학과 번호를 받아서 학과명을 리턴하는 함수
 -- 없는 번호를 입력했을 때의 대처
-
 CREATE OR REPLACE FUNCTION GET_MAJOR_NAME(V_MAJOR_NO IN VARCHAR2)
 RETURN VARCHAR2
 IS
@@ -105,12 +100,8 @@ FROM DUAL;
 SELECT 	GET_MAJOR_NAME('03') 
 FROM DUAL;
 
-
-----------------------------------------------
-
--- 실습문제 03
+-- 함수 - 실습코드04 :
 -- 반복문
------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION GET_TOTAL(N1 IN NUMBER, N2 IN NUMBER)
 RETURN NUMBER 
 IS
@@ -129,7 +120,7 @@ BEGIN
 	-- 최종 결과 반환
 	RETURN TOTAL;
 END;
------------------------------------------------------------------
+
 -- WHILE문
 CREATE OR REPLACE FUNCTION GET_TOTAL(N1 IN NUMBER, N2 IN NUMBER)
 RETURN NUMBER 
@@ -149,7 +140,7 @@ BEGIN
 	-- 최종 결과 반환
 	RETURN TOTAL;
 END;
------------------------------------------------------------------
+
 -- FOR문
 CREATE OR REPLACE FUNCTION GET_TOTAL(N1 IN NUMBER, N2 IN NUMBER)
 RETURN NUMBER 
@@ -168,13 +159,216 @@ BEGIN
 	-- 최종 결과 반환
 	RETURN TOTAL;
 END;
------------------------------------------------------------------
 
+-- 결과 값 출력
 SELECT GET_TOTAL(1, 100) FROM DUAL;
 
 
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+
+-- 트리거
+-- 데이터베이스에서 발생하는 이벤트에 대한 반응으로 자동으로 실행되는 SQL
+-- INSERT, UPDATE, DELETE 등의 이벤트에 대한 반응으로 실행
+-- 테이블에 대한 이벤트가 발생하면 자동으로 실행되는 PL/SQL블록
+-- 트리거는 테이블에 종속적이기 때문에 테이블 생성 후 트리거 생성
+-- 트리거는 테이블에 종속적이기 때문에 테이블 삭제 후 트리거 삭제
+
+-- 트리거 - 실습코드01
+CREATE TABLE DATA_LOG(
+	LOG_DATE DATE DEFAULT SYSDATE,
+	LOG_DETAIL VARCHAR2(1000)
+);
+
+-- MAJOR 테이블에 내용이 UPDATE되면 해당 기록을 저장하는 트리거
+CREATE OR REPLACE TRIGGER UPDATE_MAJOR_LOG
+AFTER 
+	UPDATE ON MAJOR
+FOR EACH ROW
+BEGIN
+	INSERT INTO DATA_LOG(LOG_DETAIL)
+	VALUES(:OLD.MAJOR_NO || '_' || :NEW.MAJOR_NO
+	|| ',' || :OLD.MAJOR_NAME || '_' || :NEW.MAJOR_NAME);
+	END;
+
+UPDATE MAJOR SET MAJOR_NAME = '디지털문화콘테츠학과'
+WHERE MAJOR_NO = 'A9';
 
 
+-- 트리거 - 실습코드02
+-- MAJOR에 학과 정보 추가시 발동되는 트리거
+CREATE OR REPLACE TRIGGER INSERT_MAJOR_TRIGGER
+AFTER
+	INSERT ON MAJOR
+FOR EACH ROW
+BEGIN
+	INSERT INTO DATA_LOG(LOG_DETAIL)
+	VALUES(:NEW.MAJOR_NO || '-' || :NEW.MAJOR_NAME);
+END;
+
+-- 학과정보 추가
+INSERT INTO MAJOR VALUES('C9', '주짓수학과');
 
 
+-- 학과 확인
+SELECT * FROM MAJOR;
 
+-- 트리거 - 실습코드03
+-- 학과 정보 삭제시 발동되는 트리거
+CREATE OR REPLACE TRIGGER DELETE_MAJOR_TRIGGER
+AFTER
+	DELETE ON MAJOR
+FOR EACH ROW
+BEGIN
+	INSERT INTO DATA_LOG(LOG_DETAIL)
+	VALUES(:OLD.MAJOR_NO || '-' || :OLD.MAJOR_NAME);
+END;
+
+-- 삭제
+DELETE FORM MAJOR WHERE MAJOR_NO = 'C9';
+
+-- 로그 검색
+SELECT * FROM DATA_LOG;
+
+
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+
+-- 트리거 - 실습코드04
+-- 트리거 INSERT, UPDATE, DELETE 합치기
+CREATE OR REPLACE MAJOR_TRIGGER
+AFTER
+	INSERT OR UPDATE OR DELETE ON MAJOR
+FOR EACH ROW
+BEGIN
+	IF INSERT THEN
+	INSERT INTO DATA_LOG(LOG_DETAIL)
+	VALUES('INSERT' || :NEW.MAJOR_NO || '-' || :NEW.MAJOR_NAME);
+
+	ELSIF UPDATE THEN
+	INSERT INTO DATA_LOG(LOG_DETAIL)
+	VALUES('UPDATE' || :OLD.MAJOR_NO || '_' || :NEW.MAJOR_NO
+	|| ',' || :OLD.MAJOR_NAME || '_' || :NEW.MAJOR_NAME);
+
+	ELSE DELETE THEN
+INSERT INTO DATA_LOG(LOG_DETAIL)
+	VALUES('DELETE' || :OLD.MAJOR_NO || '-' || :OLD.MAJOR_NAME);
+
+	END IF;
+
+END;
+
+
+-- 트리거 - 실습코드05
+CREATE OR REPLACE MAJOR_TRIGGER
+AFTER
+	INSERT OR UPDATE OR DELETE ON MAJOR
+FOR EACH ROW
+BEGIN
+	IF INSERTING THEN
+	INSERT INTO DATA_LOG(LOG_DETAIL)
+	VALUES('INSERT' || :NEW.MAJOR_NO || '-' || :NEW.MAJOR_NAME || '/' || SYS_CONTEXT('USERENV', 'SESSION_USER'));
+
+	ELSIF UPDATING THEN
+	INSERT INTO DATA_LOG(LOG_DETAIL)
+	VALUES('UPDATE' || :OLD.MAJOR_NO || '_' || :NEW.MAJOR_NO
+	|| ',' || :OLD.MAJOR_NAME || '_' || :NEW.MAJOR_NAME || '/' || SYS_CONTEXT('USERENV', 'SESSION_USER'));
+
+	ELSE DELETING THEN
+	INSERT INTO DATA_LOG(LOG_DETAIL)
+	VALUES('DELETE' || :OLD.MAJOR_NO || '-' || :OLD.MAJOR_NAME || '/' || SYS_CONTEXT('USERENV', 'SESSION_USER'));
+	END IF;
+END;
+
+
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+
+-- 다른 계정으로 C##COTT 에서 작업하기
+-- system 로그인 후 
+-- 새로운 계정 생성 :
+CREATE USER C##CHANGS IDENTIFIED BY 123456;
+
+-- 권한(데이터 권한, 접속 권한) : 
+GRANT RESOURCE, CONNECT TO C##CHANGS;
+
+ -- 테이블스페이스에서 데이터 저장 용량에 제한 :  
+ALTER USER C##CHANGS DEFAULT TABLESPACE USERS QUOTA UNLIMITED ON USERS;
+
+
+-- C##COTT의 계정에 권한을 주는 명령어(권한 ; 4가지) 구체적으로 입력
+GRANT
+	INSERT, UPDATE, DELETE, SELECT ON C##COTT.MAJOR TO C##CHANGS;
+
+
+-- 추가
+INSERT INTO MAJOR VALUES('C11', '유도학과');
+-- 삭제
+DELETE FROM MAJOR WHERE MAJOR_NO = 'C11';
+-- 확인
+SELECT * FROM MAJOR;
+
+-- 적속한 사용자 확인
+SELECT SYS_CONTEXT('USERENV', 'SESSION_USER') FROM DUAL;
+
+
+-- 트리거 - 실습코드06
+--로그를 저장할 테이블
+CREATE TABLE BOARD_LOG (
+    LOG_ID          NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    ACTION_TYPE     VARCHAR2(10),
+    USER_ID         VARCHAR2(50),
+    BOARD_NO         NUMBER,
+    POST_TITLE      VARCHAR2(150),
+    POST_CONTENT    VARCHAR2(3000),
+    BEFORE_TITLE    VARCHAR2(150),
+    BEFORE_CONTENT  VARCHAR2(3000),
+    ACTION_TIMESTAMP TIMESTAMP DEFAULT SYSTIMESTAMP
+);
+
+--게시판 테이블 트리거 생성
+-- INSERT, UPDATE, DELETE 에 대응하는 트리거
+CREATE OR REPLACE TRIGGER TRG_BOARD_ACTIONS
+AFTER
+	INSERT OR UPDATE OR DELETE ON BOARD
+FOR EACH ROW
+DECLARE
+	V_USER_ID VARCHAR2(50);
+BEGIN
+	SELECT 
+		SYS_CONTEXT('USERENV','SESSION_USER') INTO V_USER_ID 
+	FROM DUAL;
+
+	IF INSERTING THEN
+		INSERT INTO 
+			BOARD_LOG(
+				ACTION_TYPE, USER_ID, BOARD_NO, 
+				POST_TITLE, POST_CONTENT)
+		VALUES('INSERT', V_USER_ID, :NEW.BNO, 
+			:NEW.TITLE, :NEW.CONTENT);
+	ELSIF UPDATING THEN
+		INSERT INTO 
+			BOARD_LOG(
+				ACTION_TYPE, USER_ID, BOARD_NO, 
+				POST_TITLE, POST_CONTENT,
+				BEFORE_TITLE, BEFORE_CONTENT)
+		VALUES('UPDATE', V_USER_ID, :NEW.BNO, 
+			:NEW.TITLE, :NEW.CONTENT,
+			:OLD.TITLE, :OLD.CONTENT);
+	ELSIF DELETING THEN
+		INSERT INTO 
+			BOARD_LOG(
+				ACTION_TYPE, USER_ID, BOARD_NO, 
+				BEFORE_TITLE, BEFORE_CONTENT)
+		VALUES('DELETE', V_USER_ID, :OLD.BNO, 
+			:OLD.TITLE, :OLD.CONTENT);
+	END IF;
+END;
+
+--게시판 테이블에 대한 트리거 테스트
+INSERT INTO BOARD(BNO,TITLE, CONTENT, ID) 
+VALUES(999999,'제목1','내용1','com.wikia.Prodder');
+DELETE FROM BOARD WHERE BNO = 999999;
+UPDATE BOARD SET TITLE = '제목2', CONTENT = '내용2' WHERE BNO = 999999;
+
+SELECT * FROM BOARD_LOG;
