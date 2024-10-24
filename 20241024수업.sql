@@ -110,7 +110,7 @@ FROM DUAL;
 
 -- 실습문제 03
 -- 반복문
-
+-----------------------------------------------------------------
 CREATE OR REPLACE FUNCTION GET_TOTAL(N1 IN NUMBER, N2 IN NUMBER)
 RETURN NUMBER 
 IS
@@ -126,11 +126,49 @@ BEGIN
 		I := I + 1; -- I 값을 1씩 증가시킴
 		EXIT WHEN I > N2;	-- I가 N2보다 커지면 루프 종료	 
 	END LOOP;
-
 	-- 최종 결과 반환
 	RETURN TOTAL;
-	
 END;
+-----------------------------------------------------------------
+-- WHILE문
+CREATE OR REPLACE FUNCTION GET_TOTAL(N1 IN NUMBER, N2 IN NUMBER)
+RETURN NUMBER 
+IS
+	TOTAL NUMBER;  -- 합계를 0으로 초기화
+	I NUMBER; -- I는 N1 값으로 초기화
+BEGIN 
+--	 초기화
+	TOTAL := 0;
+	I := N1;
+-- 루프 시작: N1부터 N2까지 더하는 작업
+	WHILE(I <= N2)
+	LOOP
+		TOTAL := TOTAL + I; -- I 값을 TOTAL에 더함
+		I := I + 1; -- I 값을 1씩 증가시킴
+	END LOOP;
+	-- 최종 결과 반환
+	RETURN TOTAL;
+END;
+-----------------------------------------------------------------
+-- FOR문
+CREATE OR REPLACE FUNCTION GET_TOTAL(N1 IN NUMBER, N2 IN NUMBER)
+RETURN NUMBER 
+IS
+	TOTAL NUMBER;  -- 합계를 0으로 초기화
+	I NUMBER; -- I는 N1 값으로 초기화
+BEGIN 
+--	 초기화
+	TOTAL := 0;
+	I := N1;
+-- 루프 시작: N1부터 N2까지 더하는 작업
+	FOR I IN N1 .. N2
+	LOOP
+		TOTAL := TOTAL + I; -- I 값을 TOTAL에 더함
+	END LOOP;
+	-- 최종 결과 반환
+	RETURN TOTAL;
+END;
+-----------------------------------------------------------------
 
 SELECT GET_TOTAL(1, 100) FROM DUAL;
 
