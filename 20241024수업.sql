@@ -372,3 +372,156 @@ DELETE FROM BOARD WHERE BNO = 999999;
 UPDATE BOARD SET TITLE = '제목2', CONTENT = '내용2' WHERE BNO = 999999;
 
 SELECT * FROM BOARD_LOG;
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-- 프로시저
+-- sql 쿼리문으로 로직을 조합해서 사용하는 데이터베이스 코드
+-- sql문과 제어문을 이용해서, 데이터를 검색, 삽입, 수정, 삭제를 할 수 있음
+-- 결과를 외부로 전달할 수 있음
+-- 하나의 트랜잭션 구성시 사용을 함.
+
+-- 실습코드01
+CREATE OR REPLACE PROCEDURE PROCEDURE_EX1
+IS
+	-- 변수 선언
+	TEST_VAR VARCHAR2(100);
+
+BEGIN
+	-- 실행부
+	TEST_VAR := 'HELLO WORLD';
+	DBMS_OUTPUT.PUT_LINE(TEST_VAR);
+END;
+
+
+-- DBMS_OUTPUT을 활성화
+SET SERVEROUTPUT ON;
+
+-- 프로시저 실행되는 부분
+BEGIN
+	PROCEDURE_EX1;
+END;
+
+-- GPT 예제코드 :
+CREATE OR REPLACE PROCEDURE calculate_sum (
+    num1 IN NUMBER,  -- 첫 번째 입력값
+    num2 IN NUMBER   -- 두 번째 입력값
+) 
+IS
+    result NUMBER;   -- 합을 저장할 변수
+BEGIN
+    -- 두 입력값의 합을 계산하여 result에 저장
+    result := num1 + num2;
+    
+    -- 결과 출력
+    DBMS_OUTPUT.PUT_LINE('The sum of ' || num1 || ' and ' || num2 || ' is: ' || result);
+END;
+
+-- 실행
+BEGIN
+    calculate_sum(10, 20);  -- 두 숫자 10과 20의 합을 계산
+END;
+
+
+-- 매개변수가 있는 프로시저
+-- 실습코드 02
+CREATE OR REPLACE PROCEDURE PROCEDURE_EX2(
+    V_PID IN VARCHAR2,  -- 사람의 ID를 입력받는 매개변수
+    V_PNAME IN VARCHAR2, -- 사람의 이름을 입력받는 매개변수
+    V_AGE IN NUMBER -- 사람의 나이를 입력받는 매개변수
+)
+IS
+    TEST_VAR VARCHAR2(100); -- 내부적으로 사용할 문자열 변수
+BEGIN
+    -- 테스트용 변수에 값 할당
+    TEST_VAR := 'HELLO WORLD';
+
+    -- 입력받은 매개변수를 출력
+    DBMS_OUTPUT.PUT_LINE(V_PID || ' ' || V_PNAME || ' ' || V_AGE);
+
+    -- PERSON 테이블에 입력받은 값 삽입
+    INSERT INTO PERSON VALUES(V_PID, V_PNAME, V_AGE);
+
+    -- 데이터 삽입 후 커밋, 데이터베이스에 영구 반영
+    COMMIT; 
+EXCEPTION
+    -- 예외 처리: 모든 예외를 잡아내어 오류 메시지 출력 후 롤백 수행
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR');  -- 오류 메시지 출력
+        ROLLBACK; -- 문제가 발생하면 모든 변경사항을 롤백
+END;
+
+-- 실행
+BEGIN
+	PROCEDURE_EX2('0004', '김씨', 50);
+END;
+
+-- 수정
+UPDATE PERSON
+SET PID = '0006'
+WHERE PID = '0004';
+COMMIT;
+
+-- 프로시저 ; OUT
+-- 값을 외부로 전달하는 프로시저
+CREATE OR REPLACE PROCEDURE PROCEDURE_EX3(
+    NUM IN NUMBER,    -- 입력값: 팩토리얼을 계산할 숫자
+    RESULT OUT NUMBER -- OUT 매개변수: 팩토리얼 계산 결과를 반환
+)
+IS
+    FACT NUMBER := 1; -- 팩토리얼 값을 계산할 변수
+    I NUMBER;         -- 반복문에 사용할 변수
+BEGIN
+    -- 팩토리얼 계산 (1부터 NUM까지 곱함)
+    IF NUM < 0 THEN
+        RESULT := NULL;  -- 음수일 경우 팩토리얼을 계산할 수 없으므로 NULL 반환
+    ELSE
+        FOR I IN 1..NUM LOOP
+            FACT := FACT * I;
+        END LOOP;
+        RESULT := FACT;  -- 계산한 팩토리얼 값을 RESULT에 저장
+    END IF;
+END;
+
+-- 실행
+DECLARE
+    FACT_RESULT NUMBER;  -- 팩토리얼 결과를 저장할 변수
+BEGIN
+    -- NUM이 5인 경우 팩토리얼 계산
+    PROCEDURE_EX3(5, FACT_RESULT);
+    
+    -- 팩토리얼 결과 출력
+    DBMS_OUTPUT.PUT_LINE('The factorial of 5 is: ' || FACT_RESULT);
+END;
+
+-- 강사답
+CREATE OR REPLACE PROCEDURE PROCEDURE_EX3(
+	NUM IN NUMBER,
+	RESULT OUT NUMBER)
+IS
+	I NUMBER;
+	USER_EXCEPTION EXCEPTION;
+BEGIN
+	IF NUM <= 0 THEN
+		RAISE USER_EXCEPTION;
+	END IF;
+	--반복문 이용해서 1~NUM까지 곱하는 팩토리얼 계산
+	--결과 값을 RESULT에 저장
+	RESULT := 1;
+	FOR I IN 1 .. NUM
+	LOOP
+		RESULT := RESULT * I;
+	END LOOP;
+EXCEPTION
+	WHEN OTHERS THEN
+		DBMS_OUTPUT.PUT_LINE('숫자는 0보다 커야합니다.');
+		RESULT := -1;
+END;
+
+-- 실행
+DECLARE
+	FAC NUMBER;
+BEGIN
+	PROCEDURE_EX3(5, FAC);
+	DBMS_OUTPUT.PUT_LINE(FAC);
+END;
