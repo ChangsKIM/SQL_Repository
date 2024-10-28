@@ -525,3 +525,24 @@ BEGIN
 	PROCEDURE_EX3(5, FAC);
 	DBMS_OUTPUT.PUT_LINE(FAC);
 END;
+
+
+CREATE OR REPLACE FUNCTION FN_GET_GRADE(p_score NUMBER)
+RETURN VARCHAR2 
+IS
+    v_grade VARCHAR2(1);  -- v_grade를 VARCHAR2 타입으로 변경
+BEGIN
+    IF p_score >= 4.0 THEN
+        v_grade := 'A';
+    ELSIF p_score >= 3.5 THEN
+        v_grade := 'B';
+    ELSIF p_score >= 3.0 THEN
+        v_grade := 'C';
+    ELSIF p_score >= 2.5 THEN
+        v_grade := 'D';
+    ELSE
+        v_grade := 'F';
+    END IF;
+
+    RETURN v_grade;
+END;
